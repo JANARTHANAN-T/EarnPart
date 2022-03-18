@@ -21,7 +21,9 @@ const LocalStrategy=require('passport-local')
 const mongoose=require('mongoose')
 const session = require('express-session');
 const methodOverride=require('method-override')
-mongoose.connect('mongodb://localhost:27017/EarnPart',{useNewUrlParser:true,useUnifiedTopology:true})
+db=process.env.DB;
+// mongoose.connect('mongodb://localhost:27017/EarnPart',{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(db,{useNewUrlParser:true,useUnifiedTopology:true})
 .then( () => {
     console.log("Connection open")
 }).catch(err => {
