@@ -1,0 +1,15 @@
+<% layout('layout/boilerplate.ejs') %>
+<style>
+      
+      #map{
+            border-radius: 20px;
+            border:5px solid rgb(20, 159, 223);
+      }
+</style>
+<div class="container my-5">
+<div id="map"  style="height:550px;width:100%;"></div>
+</div>
+<script>
+      const user= {features: <%- JSON.stringify(user) %>}
+</script>
+<script src="/javascripts/clusterMap.js"></script>

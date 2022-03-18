@@ -1,0 +1,59 @@
+<style>
+  .navbar{
+      /* background:rgb(20, 159, 223); */
+      background-image: linear-gradient(to bottom right, #2a2a72,#009ffd);
+  }
+  .nav-link,.navbar-brand{
+      color: white;
+  }
+  .nav-link:hover{
+      color:white;
+      
+      padding-bottom:3px;
+      border-bottom: 2px solid white;
+  }
+  nav .navbar-brand:hover{
+           color:white;
+           transform: none;
+           border-bottom: none;
+  }
+
+ nav button i {
+      color: rgb(20, 159, 223);;
+      
+  }
+nav button{
+ background: white !important;
+}
+
+ 
+</style>
+
+
+<nav class="navbar sticky-top navbar-expand-lg">
+   <div class="container-fluid">
+     <a class="navbar-brand" href="/"><i class="fa-solid fa-graduation-cap"></i> EARNPART</a>
+     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+       <i class="fa-solid fa-bars"></i>
+     </button>
+     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <a class="nav-link mx-3" href="/"> Home</a>
+               <a class="nav-link mx-3" href="/earn">Post</a>
+               <a class="nav-link mx-3" href="/tasks">Task</a>
+       </ul>
+  
+     <div class="navbar-nav ml-auto">
+       <% if(!currentUser) {%>
+       <a class="nav-link" href="/login"> Login</a>
+       <a class="nav-link" href="/register"> Register</a>
+       <% } else {%>
+        <a href="/account" class="nav-link">My Account</a>
+       <a class="nav-link" href="/map"> Map</a>
+       <a class="nav-link" href="/logout"> Logout</a>
+       <% } %>
+   </div>
+   </div>
+</div>
+ </nav>
+
