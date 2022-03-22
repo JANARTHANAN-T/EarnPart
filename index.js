@@ -240,7 +240,56 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { err });
 });
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log("Server running on port 8080");
-});
+app.get('/application/:id',async(req,res)=>{
+    const {id} = req.params;
+    const task = await Task.findById(id).populate('applier');
+    res.render('applications.ejs',{task})
+})
+app.get('/map',async (req,res)=>{
+    const user= await User.find({})
+    res.render('map.ejs',{user})
+})
+app.get('/hired/:id/:taskId',(req,res)=>{
+    const {id,taskId}= req.params
+    res.render('hireForm.ejs',{id,taskId})
+})
+app.post('/hired/:id/:taskId',async(req,res)=>{
+    const {id,taskId}=req.params;
+    const {guide}  = req.body;
+    const user = await User.findById(id);
+    const task = await Task.findById(taskId);
+    task.guide=guide;
+    task.progress=0;
+    console.log(task)
+    user.given.push(task);
+    await task.save();
+    await user.save();
+    req.flash('success','message is sent to the user');
+    res.redirect('/earn');
+})
+app.get('/progress',(req,res)=>{
+    res.render("progress")
+})
+app.get('/sortskill/:body',async(req,res)=>{
+    const {body} = req.params;
+    const skill =  await Skill.find({body}).populate('author');
+    const arr=[]
+    for(let s of skill){
+        arr.push(s.author)
+    }
+    let uniqueProfile = [...new Set(arr)]
+    res.render('skill.ejs',{uniqueProfile})
+})
+app.all('*',(req,res,next) => {
+    next(new ExpressError('Page Not Found',404))
+})
+app.use((err,req,res,next) => {
+    const {statusCode=500} = err;
+    if(!err.message) err.message='something went wrong';
+    res.status(statusCode).render('error.ejs',{err});
+})
+const port=process.env.PORT||8080
+app.listen(port,()=>{
+    console.log('Server running on port 8080')
+})
+
