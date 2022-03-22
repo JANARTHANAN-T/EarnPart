@@ -17,27 +17,42 @@
 	margin-top:22px;
     margin-bottom: 20px;
 }
+
+  @media only screen and (max-width: 767px) {
+    #img1 {
+      border-radius: 50%;
+      height: 100%;
+      width: 50%;
+    }
+  }
+
 </style>
-<div class="container">
-<div class="row mb-5">
-    <div class="col-6 offset-3">
-        <div class="card mb-3">
-          <% user.image.forEach((img,i) => { %>
-              <img src="<%= img.url %>" class="card-img-top" alt="...">
-            <% }) %>
-            <div class="card-body">
-              <h5 class="card-title"><%=user.username%></h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-            <ul class="list-group list-group-flush">
-             
-              <li class="list-group-item"><%=user.location%></li>
-              <li class="list-group-item"><%=user.qualification%></li>
-            </ul>
-          </div>
+<div class="container mt-5">
+  <div class="card mb-3">
+    <div class="row">
+      <div class="col-md-3" style="text-align: center">
+        <% user.image.forEach((img,i) => { %>
+        <img src="<%= img.url %>" id="img1" class="card-img-top" alt="..." />
+        <% }) %>
+      </div>
+      <div class="col-md-9">
+        <div class="card-body">
+          <h5 class="card-title fs-3 text-uppercase"><%=user.username%></h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item fs-6"><b>Email : </b><%=user.email%></li>
+          <li class="list-group-item"><b>Mobile : </b><%=user.phone%></li>
+          <li class="list-group-item">
+            <b>Education Qualification : </b><%=user.qualification%>
+          </li>
+          <li class="list-group-item">
+            <b>Location :</b><%=user.location %> 
+          </li>
+        
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
 <div class="container">
   <div class="row">
@@ -62,14 +77,19 @@
 <div class="container">
   <% if(user.feeds.length) {%>
   <h2 class="text-center">Posts</h2>
-  <div class="row">
+  <div class="row mt-5">
       <% for(feed of user.feeds) {%>
-        <div class="col-lg-4 col-md-12">
+        <div class=" col-lg-4 ">
         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
           <div class="carousel-inner">
             <% feed.image.forEach((img,i) => { %>
-            <div class="carousel-item <%= i===0 ?'active' :'' %>">
-              <img src="<%= img.url %>" class="d-block w-100" alt="...">
+            <div class="carousel-item <%= i===0 ?'active' :'' %>" 
+             style="
+              background-image: url('<%=img.url%>');
+              background-size: cover;
+              background-position: center;
+              height: 250px;" >
+              
             </div>
             <% }) %>
           </div>
@@ -87,11 +107,17 @@
           <div class="card mb-3" >
               <div class="card-body">
                   <div class="card-body">
-                      <p class="card-text"><%=feed.desc%></p>
+                      <p class="card-text"><%=feed.desc.substring(0,200)%>...</p>
+                      
                     </div>
                     <ul class="list-group list-group-flush">
                       <li class="list-group-item text-muted"><%=feed.author.username%>days</li>
                       <li class="list-group-item text-muted"><%=feed.duration%>days</li>
+                      <li class="list-group-item text-muted">
+                        <form action="/earn/<%=feed._id%>" method="get">
+                          <input type="submit" value="VIEW" class="btn btn-outline-info">
+                        </form>
+                      </li>
                     </ul>
                   </div>
                   </div>

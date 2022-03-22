@@ -43,7 +43,8 @@
                 </div>
 </div>
     <div class="col-lg-6 offset-2 mt-5">
-      <% if(currentUser) {%>
+      
+      <% if(currentUser && !feed.author.equals(currentUser._id)) {%>
     <h2>LEAVE A REVIEW</h2>
     <form action="/earn/<%=feed._id%>/reviews" method="POST" class='mb-3 validate-form' novalidate>
         <fieldset class="starability-basic">

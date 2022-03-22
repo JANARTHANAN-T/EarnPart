@@ -1,160 +1,215 @@
 <% layout('layout/boilerplate.ejs') %>
 
+<style>
+  @media only screen and (max-width: 767px) {
+    #img1 {
+      border-radius: 50%;
+      height: 100%;
+      width: 50%;
+    }
+  }
+</style>
+
 <h3 class="text-center display-4 my-5">MY ACCOUNT</h3>
 <div class="container">
-        <div class="card mb-3">
-          <div class="row">
-            <div class="col-md-3">
-          <% user.image.forEach((img,i) => { %>
-              <img src="<%= img.url %>" class="card-img-top" alt="...">
-            <% }) %>
-          </div>
-          <div class="col-md-9">
-            <div class="card-body">
-              <h5 class="card-title fs-3 text-uppercase"><%=user.username%></h5>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item fs-6"><b>Email : </b><%=user.email%></li>
-              <li class="list-group-item"><b>Mobile : </b><%=user.phone%></li>
-              <li class="list-group-item"><b>Education Qualification : </b><%=user.qualification%></li>
-              <li class="list-group-item text-muted"><b>Account balance : </b> 0</li>
-              <a href="/check" class="btn btn-success">Face recogonisation</a>
-            </ul>
-          </div>
-        </div>
-          </div>
-<div class="row mb-5 my-5">
-<div class="col-md-6">
-  <% if(user.skill.length){ %>
-    <h2 class="text-center fs-2  my-4">SKILL SET</h2>
-    <%}%>
   <div class="card mb-3">
-    <div class="card-body">
-      <ul class="list-group list-group-flush">
-  <% for(let skill of user.skill){%>
-    <li class="list-group-item"><%=skill.body%></li>
-    <%}%>
-    <li class="list-group-item">
-    <form action="/earn/<%=user._id%>/skills" method="POST" class='mb-3 validate-form' novalidate>
-      <div class="px-3 ">
-        <label class="form-label" for="skill"> Add skills</label>
-        <input type="text" name="skills[body]" id="skill">   <span><button class="btn btn-success"><i class="fas fa-plus"></i></button></span>
-       
+    <div class="row">
+      <div class="col-md-3" style="text-align: center">
+        <% user.image.forEach((img,i) => { %>
+        <img src="<%= img.url %>" id="img1" class="card-img-top" alt="..." />
+        <% }) %>
       </div>
-      </form>
-    </li>
-      </ul>
+      <div class="col-md-9">
+        <div class="card-body">
+          <h5 class="card-title fs-3 text-uppercase"><%=user.username%></h5>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item fs-6"><b>Email : </b><%=user.email%></li>
+          <li class="list-group-item"><b>Mobile : </b><%=user.phone%></li>
+          <li class="list-group-item">
+            <b>Education Qualification : </b><%=user.qualification%>
+          </li>
+          <li class="list-group-item text-muted">
+            <b>Account balance : </b> 0
+          </li>
+          <a href="/check" class="btn btn-success">Face recogonisation</a>
+        </ul>
       </div>
-      </div>
-</div>
-<div class="col-md-6">
-
-<h1 class="text-center fs-2 my-4 ">QR CODE</h1>
-    <div class="col-6 offset-5  my-5">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=https://account/&amp;size=100x100"  alt="">
     </div>
-    <div class="text-center fs-5 fw-bold">Scan to view profile</div>
+  </div>
+  <div class="row mb-5 my-5">
+    <div class="col-md-6">
+      <% if(user.skill.length){ %>
+      <h2 class="text-center fs-2 my-4">SKILL SET</h2>
+      <%}%>
+      <div class="card mb-3">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <% for(let skill of user.skill){%>
+            <li class="list-group-item"><%=skill.body%></li>
+            <%}%>
+            <li class="list-group-item">
+              <form
+                action="/earn/<%=user._id%>/skills"
+                method="POST"
+                class="mb-3 validate-form"
+                novalidate
+              >
+                <div class="px-3">
+                  <label class="form-label" for="skill"> Add skills</label>
+                  <input type="text" name="skills[body]" id="skill" />
+                  <span
+                    ><button class="btn btn-success">
+                      <i class="fas fa-plus"></i></button
+                  ></span>
+                </div>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-</div>
+    <div class="col-md-6">
+      <h1 class="text-center fs-2 my-4">QR CODE</h1>
+      <div class="col-6 offset-5 my-5">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?data=https://earnpart.herokuapp.com/account&amp;size=100x100"
+          alt=""
+        />
+      </div>
+      <div class="text-center fs-5 fw-bold">Scan to view profile</div>
+    </div>
+  </div>
 
-<% if(user.feeds.length){%>
-<div class="container my-5">
-  <h2 class="text-center my-5 pb-5">POST</h2>
-      <% for(feed of user.feeds) {%>
-        <div class="row">
-          
-        <div class=" col-md-4">
-        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  <% if(user.feeds.length){%>
+  <div class="container my-5">
+    <h2 class="text-center my-5 pb-5">POST</h2>
+    <% for(feed of user.feeds) {%>
+    <div class="row">
+      <div class="col-md-4">
+        <div
+          id="carouselExampleControls"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
           <div class="carousel-inner">
             <% feed.image.forEach((img,i) => { %>
             <div class="carousel-item <%= i===0 ?'active' :'' %>">
-              <img src="<%= img.url %>" class="d-block w-100" alt="...">
+              <img src="<%= img.url %>" class="d-block w-100" alt="..." />
             </div>
             <% }) %>
           </div>
-          <% if( feed.image.length > 1){ %> 
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <% if( feed.image.length > 1){ %>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev"
+          >
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleControls"
+            data-bs-slide="next"
+          >
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
-          <%}%> 
+          <%}%>
         </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="card-body">
+              <p class="card-text"><%=feed.desc%></p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-muted">
+                <%=feed.author.username%>
+              </li>
+              <li class="list-group-item text-muted"><%=feed.duration%>days</li>
+            </ul>
+            <div class="card-body">
+              <a href="/earn/<%=feed._id%>/edit" class="card-link btn btn-info"
+                >Edit</a
+              >
+              <form
+                class="d-inline"
+                action="/earn/<%=feed._id%>?_method=DELETE"
+                method="POST"
+              >
+                <button class="btn btn-danger">Delete</button>
+              </form>
+            </div>
+          </div>
         </div>
-        <div class="col-md-8">
-          <div class="card mb-3" >
-              <div class="card-body">
-                  <div class="card-body">
-                      <p class="card-text"><%=feed.desc%></p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item text-muted"><%=feed.author.username%></li>
-                      <li class="list-group-item text-muted"><%=feed.duration%>days</li>
-    
-                    </ul>
-                    <div class="card-body">
-                      <a href="/earn/<%=feed._id%>/edit" class="card-link btn btn-info">Edit</a>
-                      <form class="d-inline" action="/earn/<%=feed._id%>?_method=DELETE" method="POST">
-                          <button class="btn btn-danger">Delete</button>
-                      </form>
-                    </div>
-                  </div>
-                  </div>
-                  </div>
-                </div>
-              </div>
+      </div>
+    </div>
+
     <%}%>
-  
-</div>
-<%}%>
-<%if(user.task.length){%>
-<div class="container my-5">
+  </div>
+
+  <%}%> <%if(user.task.length){%>
+  <div class="container my-5">
     <h2 class="text-center my-5">MY TASKS</h2>
     <div class="row">
-    <% for(let task of user.task){ %>
+      <% for(let task of user.task){ %>
       <div class="col-md-6 mt-3">
-      <div class="card mb-5">
-        <img src="<%=task.image[0].url%>" class="card-img-top" height="300px" alt="">
-        <div class="card-body">
+        <div class="card mb-5">
+          <img
+            src="<%=task.image[0].url%>"
+            class="card-img-top"
+            height="300px"
+            alt=""
+          />
           <div class="card-body">
-            <h1 class="card-title"><%=task.title%></h1>
-            <p class="card-text"><%=task.desc%></p>
+            <div class="card-body">
+              <h1 class="card-title"><%=task.title%></h1>
+              <p class="card-text"><%=task.desc%></p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item text-muted">
+                <%=task.stipend%> STIPEND
+              </li>
+              <li class="list-group-item text-muted">
+                POSTED BY - <%=task.author.username%>
+              </li>
+              <li class="list-group-item text-muted"><%=task.days%>days</li>
+            </ul>
+            <div class="card-body">
+              <a
+                href="/application/<%=task._id%>"
+                class="card-link btn btn-info"
+                >APPLIERS</a
+              >
+            </div>
           </div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item text-muted"><%=task.stipend%> STIPEND</li>
-            <li class="list-group-item text-muted">POSTED BY - <%=task.author.username%></li>
-            <li class="list-group-item text-muted"><%=task.days%>days</li>
-          </ul>
-    <div class="card-body">
-      <a href="/application/<%=task._id%>" class="card-link btn btn-info">APPLIERS</a>
+        </div>
       </div>
-  </div>
-</div>
-</div>
       <%}%>
+    </div>
   </div>
-</div>
-<%}%>
-
-<%if(user.given.length){%>
-<div class="container my-5">
-  <h2 class="text-center my-5">HIRED TASKS</h2>
-  <div class="row">
+  <%}%> <%if(user.given.length){%>
+  <div class="container my-5">
+    <h2 class="text-center my-5">HIRED TASKS</h2>
+    <div class="row">
       <% for(let t of user.given){ %>
-        <div class="col-md-4">
+      <div class="col-md-4">
         <div class="card mb-3">
           <div class="card-body">
             <h2 class="card-title pb-3"><%=t.title%></h2>
             <p class="card-text fw-normal fs-5"><%=t.desc%></p>
             <p class="card-text"><%=t.guide%></p>
-            <a href="/" class="btn btn-primary">VIEW</a>
+            <a href="/tasks/<%=t._id%>" class="btn btn-primary">VIEW</a>
           </div>
-        </div>     
         </div>
-        <%}%>
+      </div>
+      <%}%>
+    </div>
   </div>
+  <%}%>
 </div>
-<%}%>

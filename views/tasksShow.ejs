@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/stylesheets/progress.css">
 <% let flag=0; %> 
 <div class="row mb-5">
-    <div class="col-6 offset-3">
+    <div class="col-lg-6 col-md- offset-lg-3">
         <div class="card mb-3" >
             <div class="card-body">
               <img src="<%= task.image[0].url %>" class="card-img-top" alt="...">
@@ -16,9 +16,11 @@
                     <li class="list-group-item text-muted">POSTED BY - <%=task.author.username%></li>
                     <li class="list-group-item text-muted"><%=task.days%>days</li>
                   </ul>
+                  <% if(task.author.equals(currentUser._id)) {%> 
                   <form class="d-inline" action="/task/<%=task._id%>?_method=DELETE" method="POST">
                     <button class="btn btn-danger">Delete</button>
                 </form>
+                <% } %> 
                  
                   <% for( let apply of task.applier ) { %>
                     <% if(apply.email==currentUser.email){ %>
@@ -27,9 +29,11 @@
                   <% } %>
                     
                   <% if(flag!==1){ %> 
+                    <% if(!task.author.equals(currentUser._id)) {%> 
                   <div class="card-body">
                     <a href="/apply/<%=task._id%>/hire/<%=id%>" class="card-link btn btn-info">APPLY NOW</a>
-                    </div>             
+                    </div>    
+                    <% } %>         
                 <% } %>
             </div>
         </div>
@@ -39,7 +43,7 @@
 
 <% if (flag==1) { %>
  
-
+  
 <form action="" method="post" class="form">
   <!-- Progress bar -->
   <div class="progressbar">
@@ -51,8 +55,8 @@
       data-title="Assign"
     ><i class="fas fa-hands-helping"></i></div>
    
-    <div class="progress-step <%= task.progress>=1 ? 'progress-step-active' :'' %>  " data-title="Verification"><i class="fas fa-user-check"></i></div>
-    <div class="progress-step <%= task.progress>=2 ? 'progress-step-active' :'' %>" data-title="OnProgress"><i class="fas fa-toolbox"></i></div>
+    <div class="progress-step <%= task.progress>=1 ? 'progress-step-active' :'' %>" data-title="OnProgress"><i class="fas fa-toolbox"></i></div>
+    <div class="progress-step <%= task.progress>=2 ? 'progress-step-active' :'' %>  " data-title="Verification"><i class="fas fa-user-check"></i></div>
     <div class="progress-step <%= task.progress>=3 ? 'progress-step-active' :'' %>" data-title="Completed"><i class="fas fa-check-circle"></i></div>
   </div>
 
@@ -60,8 +64,8 @@
   <div class="form-step form-step-active">
     
   
-     
   <% if (task.progress <3) { %>
+    
       <a href="/progress/<%=task._id%>" class="btn btn-next width-50 ml-auto">Next</a>
       <% } %>
   </div>
