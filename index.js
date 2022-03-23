@@ -18,6 +18,7 @@ const Feeds = require("./routes/feed");
 const Reviews = require("./routes/review");
 const userRoute = require("./routes/user");
 const LocalStrategy = require("passport-local");
+const sendEmail = require("./public/javascripts/mail.js");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const methodOverride = require("method-override");
@@ -110,21 +111,21 @@ app.post("/earn/:id/skills", async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id);
   const newSkill = new Skill(req.body.skills);
-//   console.log(newSkill.body + "1");
-//   newSkill.body = newSkill.body.toLowerCase().split(" ");
-//   console.log(newSkill.body + "2");
-//   for (var i = 0; i < newSkill.body.length; i++) {
-//     newSkill.body[i] =
-//       newSkill.body[i].charAt(0).toUpperCase() + newSkill.body[i].slice(1);
-//     console.log(newSkill.body + i);
-//   }
-//   console.log(newSkill.body + "3");
-//   newSkill.body.join(" ");
-//   console.log(newSkill.body);
-    await user.skill.push(newSkill);
-    newSkill.author = req.user._id;
-    await newSkill.save();
-    await user.save();
+  //   console.log(newSkill.body + "1");
+  //   newSkill.body = newSkill.body.toLowerCase().split(" ");
+  //   console.log(newSkill.body + "2");
+  //   for (var i = 0; i < newSkill.body.length; i++) {
+  //     newSkill.body[i] =
+  //       newSkill.body[i].charAt(0).toUpperCase() + newSkill.body[i].slice(1);
+  //     console.log(newSkill.body + i);
+  //   }
+  //   console.log(newSkill.body + "3");
+  //   newSkill.body.join(" ");
+  //   console.log(newSkill.body);
+  await user.skill.push(newSkill);
+  newSkill.author = req.user._id;
+  await newSkill.save();
+  await user.save();
   req.flash("success", "Skill is been added");
   res.redirect("/account");
 });
@@ -200,9 +201,11 @@ app.get("/map", async (req, res) => {
   const user = await User.find({});
   res.render("map.ejs", { user });
 });
-app.get("/hired/:id/:taskId", (req, res) => {
+app.get("/hired/:id/:taskId", async (req, res) => {
   const { id, taskId } = req.params;
-  res.render("hireForm.ejs", { id, taskId });
+  const applier = await User.findById(id);
+  console.log(applier);
+  res.render("hireForm.ejs", { id, taskId, applier });
 });
 app.post("/hired/:id/:taskId", async (req, res) => {
   const { id, taskId } = req.params;
@@ -213,6 +216,9 @@ app.post("/hired/:id/:taskId", async (req, res) => {
   task.progress = 0;
   console.log(task);
   user.given.push(task);
+  const link = "https://earnpart.herokuapp.com/";
+  console.log(guide);
+  sendEmail.sendEmail(req.body.email, req.body.guide, link);
   await task.save();
   await user.save();
   req.flash("success", "message is sent to the user");
@@ -240,56 +246,60 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error.ejs", { err });
 });
 
-app.get('/application/:id',async(req,res)=>{
-    const {id} = req.params;
-    const task = await Task.findById(id).populate('applier');
-    res.render('applications.ejs',{task})
-})
-app.get('/map',async (req,res)=>{
-    const user= await User.find({})
-    res.render('map.ejs',{user})
-})
-app.get('/hired/:id/:taskId',(req,res)=>{
-    const {id,taskId}= req.params
-    res.render('hireForm.ejs',{id,taskId})
-})
-app.post('/hired/:id/:taskId',async(req,res)=>{
-    const {id,taskId}=req.params;
-    const {guide}  = req.body;
-    const user = await User.findById(id);
-    const task = await Task.findById(taskId);
-    task.guide=guide;
-    task.progress=0;
-    console.log(task)
-    user.given.push(task);
-    await task.save();
-    await user.save();
-    req.flash('success','message is sent to the user');
-    res.redirect('/earn');
-})
-app.get('/progress',(req,res)=>{
-    res.render("progress")
-})
-app.get('/sortskill/:body',async(req,res)=>{
-    const {body} = req.params;
-    const skill =  await Skill.find({body}).populate('author');
-    const arr=[]
-    for(let s of skill){
-        arr.push(s.author)
-    }
-    let uniqueProfile = [...new Set(arr)]
-    res.render('skill.ejs',{uniqueProfile})
-})
-app.all('*',(req,res,next) => {
-    next(new ExpressError('Page Not Found',404))
-})
-app.use((err,req,res,next) => {
-    const {statusCode=500} = err;
-    if(!err.message) err.message='something went wrong';
-    res.status(statusCode).render('error.ejs',{err});
-})
-const port=process.env.PORT||8080
-app.listen(port,()=>{
-    console.log('Server running on port 8080')
-})
+app.get("/application/:id", async (req, res) => {
+  const { id } = req.params;
+  const task = await Task.findById(id).populate("applier");
+  res.render("applications.ejs", { task });
+});
+app.get("/map", async (req, res) => {
+  const user = await User.find({});
+  res.render("map.ejs", { user });
+});
+app.get("/hired/:id/:taskId", (req, res) => {
+  const { id, taskId } = req.params;
+  res.render("hireForm.ejs", { id, taskId });
+});
+app.post("/hired/:id/:taskId", async (req, res) => {
+  // const { id, taskId } = req.params;
+  // const { guide } = req.body;
+  // const user = await User.findById(id);
+  // const task = await Task.findById(taskId);
+  // task.guide = guide;
+  // task.progress = 0;
+  // //console.log(task);
+  // //user.given.push(task);
+  // const link = "https://earnpart.herokuapp.com/";
+  // console.log(guide);
+  // //sendEmail(req.pops, req.body.guide, link);
+  // // await task.save();
+  // // await user.save();
 
+  req.flash("success", "message is sent to the user");
+  console.log("hiiii");
+  //res.redirect("/earn");
+});
+app.get("/progress", (req, res) => {
+  res.render("progress");
+});
+app.get("/sortskill/:body", async (req, res) => {
+  const { body } = req.params;
+  const skill = await Skill.find({ body }).populate("author");
+  const arr = [];
+  for (let s of skill) {
+    arr.push(s.author);
+  }
+  let uniqueProfile = [...new Set(arr)];
+  res.render("skill.ejs", { uniqueProfile });
+});
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+});
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if (!err.message) err.message = "something went wrong";
+  res.status(statusCode).render("error.ejs", { err });
+});
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log("Server running on port 8080");
+});
